@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import Button from "../../Elements/Button/Button";
 
 const CardProduct = ({ children, cardBorder }) => {
@@ -9,11 +10,13 @@ const CardProduct = ({ children, cardBorder }) => {
   );
 };
 
-const Header = ({ image }) => {
+const Header = ({ image, linkTo }) => {
   return (
-    <div className="w-full drop-shadow-lg">
-      <img className="w-full h-[15rem] object-cover rounded-lg drop-shadow-lg" src={image} alt="Product1-img" />
-    </div>
+    <Link to={`/detail-product/${linkTo}`}>
+      <div className="w-full drop-shadow-lg">
+        <img className="w-full h-[15rem] object-cover rounded-lg drop-shadow-lg" src={image} alt="Product1-img" />
+      </div>
+    </Link>
   );
 };
 

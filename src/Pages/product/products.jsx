@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import Button from "../components/Elements/Button/Button";
-import CardProduct from "../components/Fragments/Product/CardProduct";
-import { getProduct } from "../Services/product.service";
-import { getUsername } from "../Services/auth.service";
+import Button from "../../components/Elements/Button/Button";
+import CardProduct from "../../components/Fragments/Product/CardProduct";
+import { getProduct } from "../../Services/product.service";
+import { useLogin } from "../../hooks/useLogin";
+import { Link } from "react-router-dom";
 
 const handleLogout = () => {
   localStorage.removeItem("token");
@@ -13,22 +14,13 @@ const ProductPage = () => {
   const [cart, setCart] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [Products, setProducts] = useState([]);
-  const [username, setUsername] = useState("");
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      setUsername(getUsername(token));
-    } else {
-      window.location.href = "/login";
-    }
-  }, [username]);
+  const username = useLogin();
 
   useEffect(() => {
     getProduct((data) => {
       setProducts(data);
     });
-  });
+  }, []);
 
   useEffect(() => {
     if (Products.length > 0 && cart.length > 0) {
@@ -59,11 +51,16 @@ const ProductPage = () => {
   return (
     <>
       <div className="w-full py-2 bg-blue-600">
-        <div className="container flex items-center justify-end">
-          <p className="mr-4 text-white">{username}</p>
-          <Button variant="bg-red-600" textColor="text-white" onClick={handleLogout}>
-            Logout
-          </Button>
+        <div className="container flex items-center justify-between">
+          <Link to="/profile">
+            <p className="font-semibold text-white">profile</p>
+          </Link>
+          <div className="flex items-center gap-x-5">
+            <p className="font-semibold text-white">{username}</p>
+            <Button variant="bg-red-600" textColor="text-white" onClick={handleLogout}>
+              Logout
+            </Button>
+          </div>
         </div>
       </div>
       <div className="container min-h-screen">
@@ -76,7 +73,7 @@ const ProductPage = () => {
             {Products.length > 0 &&
               Products.map((product) => (
                 <CardProduct cardBorder="border-blue-800" key={product.id}>
-                  <CardProduct.Header image={product.image} />
+                  <CardProduct.Header image={product.image} linkTo={product.id} />
                   <CardProduct.Body classname="mt-5 mb-3" title={product.title} price={product.price}>
                     {product.description}
                   </CardProduct.Body>
